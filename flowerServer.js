@@ -1,7 +1,13 @@
 // Load the http module
 var http = require('http');
 var fs = require('fs'); //require filesystem module
+var express = require('express');
+var path = require('path');
 
+var app = express();
+
+app.use(express.static('public'))
+//app.use(express.static(__dirname + '/public'));
 
 var PythonShell = require('python-shell');
 var options = {
@@ -23,14 +29,16 @@ var moisture=0;
 setInterval(checkStatusInterval, 10000);//20Secs
 
 //setTimeout(startHTMLServer, 10000);
-startHTMLServer();
-function buildHtml(request){
+//startHTMLServer();
+
+startExpressServer();
+/*function buildHtml(request){
 	var header = "";
 	var body = output;
 
 	return '<!DOCTYPE html>' + '<html><header>' + header + '</header><body>' + body + '</body></html>';
 
-}
+}*/
 
 function checkStatusInterval(){
 	/*PythonShell.run('demo.py', options, function (err,output){
@@ -69,5 +77,15 @@ function httpHandler (request, response) { //create server
     response.write(" "+output+" \n");
     return response.end();
   });
+}
+function startExpressServer(){
+
+	app.get('/', function(req, res) {
+    		res.sendFile(path.join(__dirname + '/index.html'));
+	});
+
+	app.listen(8000);
+
+	console.log("Server running at http://127.0.0.1:8000/");
 }
 
