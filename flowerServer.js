@@ -19,7 +19,7 @@ var options = {
 	pythonPath: '/usr/bin/python3',
 	pythonOption: ['-u'],
 	scriptPath: '/home/pi/miflora',
-	//args: ['temperature', 'fertility', 'sunlight', 'moisture', 'battery']
+	args: 'C4:7C:8D:65:F8:FB', //mac address
 };
 //var pyshell = new PythonShell(myPython);
 var output= '';
@@ -31,7 +31,9 @@ var fertility = 0;
 var sunlight = 0;
 var moisture = 0;
 var battery = 0;
-setInterval(checkStatusInterval, 10000);//20Secs
+var lastWarning = "";
+//var lastError = "";
+setInterval(checkStatusInterval, 60000);//once a minute
 
 //setTimeout(startHTMLServer, 10000);
 //startHTMLServer();
@@ -44,21 +46,48 @@ startExpressServer();
 	return '<!DOCTYPE html>' + '<html><header>' + header + '</header><body>' + body + '</body></html>';
 
 }*/
+function errPyCallback(err,data) {
+	if(err){
+		//handle errors from Python
+		//Don't change Values
+		//should print a warning in the page
+		d = new Date();
+		lastWarning = d.toUTCString() + "Issue with connection to the sensor";
+	} else {
+			temperature = data[0];
+			moisture = data[1];
+			sunlight = data[2];
+			fertility = data[3];
+			battery = data[4];
+			lastWarning = "";
+	}
+	//log in any case
+	console.log('output: %j', data);
+}
 
 function checkStatusInterval(){
 	if (!pythonSim){
 		PythonShell.run('demo.py', options, function (err,output){
-			if (err) throw err;
-			///collect results TO DO
-
-			//console.log('output: %d \n', output);
-			temperature = output[0];
-			moisture = output[1];
-			sunlight = output[2];
-			fertility = output[3];
-			battery = output[4];
+			if(err){
+				//handle errors from Python
+				//Don't change Values
+				//should print a warning in the page
+				d = new Date();
+				lastWarning = d.toUTCString() + "Issue with connection to the sensor";
+			} else {
+					temperature = output[0];
+					moisture = output[1];
+					sunlight = output[2];
+					fertility = output[3];
+					battery = output[4];
+			}
+			//log in any case
 			console.log('output: %j', output);
 		});
+		/*PythonShell.run('demo.py', options, function (err,data){
+			errPyCallback(err,data);
+		});*/
+
 	} else {
 	//output="Temperature="+temperature.toString()+" Moisture="+moisture.toString()+" Sunlight= "+sunlight.toString()+" Fertility="+fertility.toString();
 		temperature= Math.floor(Math.random() * 100);
@@ -103,6 +132,7 @@ function startExpressServer(){
 			moisture: moisture,
 			sunlight: sunlight,
 			fertility: fertility,
+			lastWarning: lastWarning,
 		});
 	});
 	//register the about page

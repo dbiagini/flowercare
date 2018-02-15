@@ -28,8 +28,12 @@
         <td width="60px"><a> Temperature</a></td>
 		<td width="60px"><a><%= temperature %>C</a></td>
 	</tr>
+	<tr align="center">
+        <td><a> Warnings</a></td>
+		<td width="60px"><a><%= lastWarning %>C</a></td>
+	</tr>
 	</table>
-	<input id="refresh" type="button" onclick="checkStatus()" value="Refresh">
+	<input id="refresh" type="button" onclick="window.location.reload()" value="Refresh">
 	<body>
 	</body>
 </html>
