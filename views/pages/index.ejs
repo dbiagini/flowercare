@@ -1,0 +1,35 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html>
+	<header>
+	</header>
+	<table height="230px" border= "1">
+    <tr>
+        <td colspan="3" style="font-size: 3em; font-weight: bold" valign="bottom">Sensor Status</td>
+    </tr>
+    <tr align="center">
+		<td width="50px"><img src="/images/sunlight.png" alt="Sunlight" style="width:50px;height:50px;"></td>
+        <td width="60px"><a> Sunlight</a></td>
+		<td width="60px"><a><%= sunlight %>%</a></td>
+	</tr>
+	<tr align="center">
+        <td width="50px"><img src="/images/water.png" alt="Moisture" style="width:50px;height:50px;"></td>
+        <td width="60px"><a> Moisture</a></td>
+		<td width="60px"><a><%= moisture %>%</a></td>
+	</tr>
+	<tr align="center">
+        <td width="50px"><img src="/images/poo.png" alt="Fertility" style="width:50px;height:50px;"></td>
+        <td width="60px"><a> Fertility</a></td>
+		<td width="60px"><a><%= fertility %>%</a></td>
+	</tr>
+	<tr align="center">
+        <td width="50px"><img src="./images/temperature.png" alt="Temperature" style="width:50px;height:50px;"></td>
+        <td width="60px"><a> Temperature</a></td>
+		<td width="60px"><a><%= temperature %>%</a></td>
+	</tr>
+	</table>
+	<input id="refresh" type="button" onclick="checkStatus()" value="Refresh">
+	<body>
+	</body>
+</html>

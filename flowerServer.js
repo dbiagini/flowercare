@@ -9,6 +9,9 @@ var app = express();
 app.use(express.static('public'))
 //app.use(express.static(__dirname + '/public'));
 
+//set the view engine to ejs
+app.set('view engine', 'ejs');
+
 var PythonShell = require('python-shell');
 var options = {
 	mode: 'text',
@@ -22,7 +25,7 @@ var output= '';
 var server;
 var html;
 var userCount=0;
-var temp=0;
+var temperature=0;
 var fertility=0;
 var sunlight=0;
 var moisture=0;
@@ -46,11 +49,11 @@ function checkStatusInterval(){
 		///collect results
 		console.log('output: %j', output);
 	});*/
-	output="Temperature="+temp.toString()+" Moisture="+moisture.toString()+" Sunlight= "+sunlight.toString()+" Fertility="+fertility.toString();
-	temp++;
-	fertility++;
-	sunlight++;
-	moisture++;
+	//output="Temperature="+temperature.toString()+" Moisture="+moisture.toString()+" Sunlight= "+sunlight.toString()+" Fertility="+fertility.toString();
+	temperature= Math.floor(Math.random() * 100);
+	fertility= Math.floor(Math.random() * 100);
+	sunlight= Math.floor(Math.random() * 100);
+	moisture= Math.floor(Math.random() * 100);
 
 }
 
@@ -80,9 +83,23 @@ function httpHandler (request, response) { //create server
 }
 function startExpressServer(){
 
+	//register index
 	app.get('/', function(req, res) {
-    		res.sendFile(path.join(__dirname + '/index.html'));
+    		//res.sendFile(path.join(__dirname + '/index.html'));
+		res.render('pages/index',{
+			temperature: temperature,
+			moisture: moisture,
+			sunlight: sunlight,
+			fertility: fertility,
+		});
 	});
+	//register the about page
+	app.get('/about', function(req, res) {
+    		//res.sendFile(path.join(__dirname + '/pages/about.html'));
+
+		res.render('pages/about');
+	});
+
 
 	app.listen(8000);
 

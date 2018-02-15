@@ -3,6 +3,7 @@
 	"version": "0.0.1",
 	"description": "Monitor Flowers app",
 	"dependencies": {
+		"ejs": "^2.5.7",
 		"express": "^4.16.2",
 		"python-shell": "^0.4.0"
 	}
