@@ -3,6 +3,7 @@ var http = require('http');
 var fs = require('fs'); //require filesystem module
 var express = require('express');
 var path = require('path');
+var pythonSim = false;
 
 var app = express();
 
@@ -18,17 +19,18 @@ var options = {
 	pythonPath: '/usr/bin/python3',
 	pythonOption: ['-u'],
 	scriptPath: '/home/pi/miflora',
-	//args: ['value', 'value2', 'value3']
+	//args: ['temperature', 'fertility', 'sunlight', 'moisture', 'battery']
 };
 //var pyshell = new PythonShell(myPython);
 var output= '';
 var server;
 var html;
-var userCount=0;
-var temperature=0;
-var fertility=0;
-var sunlight=0;
-var moisture=0;
+var userCount = 0;
+var temperature = 0;
+var fertility = 0;
+var sunlight = 0;
+var moisture = 0;
+var battery = 0;
 setInterval(checkStatusInterval, 10000);//20Secs
 
 //setTimeout(startHTMLServer, 10000);
@@ -44,16 +46,26 @@ startExpressServer();
 }*/
 
 function checkStatusInterval(){
-	/*PythonShell.run('demo.py', options, function (err,output){
-		if (err) throw err;
-		///collect results
-		console.log('output: %j', output);
-	});*/
+	if (!pythonSim){
+		PythonShell.run('demo.py', options, function (err,output){
+			if (err) throw err;
+			///collect results TO DO
+
+			//console.log('output: %d \n', output);
+			temperature = output[0];
+			moisture = output[1];
+			sunlight = output[2];
+			fertility = output[3];
+			battery = output[4];
+			console.log('output: %j', output);
+		});
+	} else {
 	//output="Temperature="+temperature.toString()+" Moisture="+moisture.toString()+" Sunlight= "+sunlight.toString()+" Fertility="+fertility.toString();
-	temperature= Math.floor(Math.random() * 100);
-	fertility= Math.floor(Math.random() * 100);
-	sunlight= Math.floor(Math.random() * 100);
-	moisture= Math.floor(Math.random() * 100);
+		temperature= Math.floor(Math.random() * 100);
+		fertility= Math.floor(Math.random() * 100);
+		sunlight= Math.floor(Math.random() * 100);
+		moisture= Math.floor(Math.random() * 100);
+	}
 
 }
 
