@@ -132,6 +132,7 @@ function startExpressServer(){
 			moisture: moisture,
 			sunlight: sunlight,
 			fertility: fertility,
+			battery: battery,
 			lastWarning: lastWarning,
 		});
 	});

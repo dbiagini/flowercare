@@ -28,9 +28,15 @@
         <td width="60px"><a> Temperature</a></td>
 		<td width="60px"><a><%= temperature %>C</a></td>
 	</tr>
+	</tr>
 	<tr align="center">
-        <td><a> Warnings</a></td>
-		<td width="60px"><a><%= lastWarning %>C</a></td>
+        <td width="50px"><img src="./images/battery.png" alt="Battery" style="width:50px;height:50px;"></td>
+        <td width="60px"><a> Battery</a></td>
+		<td width="60px"><a><%= battery %>C</a></td>
+	</tr>
+
+	<tr align="center">
+		<td width="60px"><a>Warnings: <%= lastWarning %></a></td>
 	</tr>
 	</table>
 	<input id="refresh" type="button" onclick="window.location.reload()" value="Refresh">
