@@ -3,7 +3,8 @@ var http = require('http');
 var fs = require('fs'); //require filesystem module
 var express = require('express');
 var path = require('path');
-var pythonSim = false;
+var config =require('./config');
+var pythonSim = config.useSim;
 
 var app = express();
 
@@ -19,21 +20,26 @@ var options = {
 	pythonPath: '/usr/bin/python3',
 	pythonOption: ['-u'],
 	scriptPath: '/home/pi/miflora',
-	args: 'C4:7C:8D:65:F8:FB', //mac address
+	args: config.plants[0].mac, //'C4:7C:8D:65:F8:FB', //mac address
 };
+
+console.log('config: %j', config.plants[0]);
 //var pyshell = new PythonShell(myPython);
 var output= '';
 var server;
 var html;
 var userCount = 0;
-var temperature = 0;
-var fertility = 0;
-var sunlight = 0;
-var moisture = 0;
-var battery = 0;
+var name = config.plants[0].name;
+var temperature = config.plants[0].temperature[0];
+var fertility = config.plants[0].fertility[0];
+var sunlight = config.plants[0].sunlight[0];
+var moisture = config.plants[0].moisture[0];
+var battery = config.plants[0].battery[0];
 var lastWarning = "";
 //var lastError = "";
-setInterval(checkStatusInterval, 60000);//once a minute
+
+checkStatusInterval();
+//setInterval(checkStatusInterval, 60000);//once a minute
 
 //setTimeout(startHTMLServer, 10000);
 //startHTMLServer();
@@ -46,7 +52,9 @@ startExpressServer();
 	return '<!DOCTYPE html>' + '<html><header>' + header + '</header><body>' + body + '</body></html>';
 
 }*/
-function errPyCallback(err,data) {
+
+///not used
+/*function errPyCallback(err,data) {
 	if(err){
 		//handle errors from Python
 		//Don't change Values
@@ -63,7 +71,7 @@ function errPyCallback(err,data) {
 	}
 	//log in any case
 	console.log('output: %j', data);
-}
+}*/
 
 function checkStatusInterval(){
 	if (!pythonSim){
@@ -87,6 +95,7 @@ function checkStatusInterval(){
 		/*PythonShell.run('demo.py', options, function (err,data){
 			errPyCallback(err,data);
 		});*/
+		setTimeout(checkStatusInterval, 60000); ///call yourself 
 
 	} else {
 	//output="Temperature="+temperature.toString()+" Moisture="+moisture.toString()+" Sunlight= "+sunlight.toString()+" Fertility="+fertility.toString();
@@ -128,6 +137,7 @@ function startExpressServer(){
 	app.get('/', function(req, res) {
     		//res.sendFile(path.join(__dirname + '/index.html'));
 		res.render('pages/index',{
+			name: name,
 			temperature: temperature,
 			moisture: moisture,
 			sunlight: sunlight,
