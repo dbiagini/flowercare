@@ -103,6 +103,7 @@ function checkStatusInterval(){
 		fertility= Math.floor(Math.random() * 100);
 		sunlight= Math.floor(Math.random() * 100);
 		moisture= Math.floor(Math.random() * 100);
+		battery = Math.floor(Math.random()* 100);
 	}
 
 }
