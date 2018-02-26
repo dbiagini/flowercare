@@ -3,7 +3,7 @@ var http = require('http');
 var fs = require('fs'); //require filesystem module
 var express = require('express');
 var path = require('path');
-var config =require('./config');
+var config =require('./config2pl');
 var pythonSim = config.useSim;
 
 var app = express();
@@ -20,26 +20,40 @@ var options = {
 	pythonPath: '/usr/bin/python3',
 	pythonOption: ['-u'],
 	scriptPath: '/home/pi/miflora',
-	args: config.plants[0].mac, //'C4:7C:8D:65:F8:FB', //mac address
+	args: 'dummy value', //config.plants[0].mac, //'C4:7C:8D:65:F8:FB', //mac address
 };
 
-console.log('config: %j', config.plants[0]);
+
+/*plant0 = {
+	name : "Kawa",
+	temperature : [0,18], // |actual|min|
+	fertility : [0,300],
+	sunlight : [0,1000],
+	moisture : [0,15],
+	battery : [0,10],
+	lastWarning : "",
+	mac : 'C4:7C:8D:65:F8:FB', //mac address
+};*/
+
 //var pyshell = new PythonShell(myPython);
 var output= '';
 var server;
 var html;
 var userCount = 0;
-var name = config.plants[0].name;
-var temperature = config.plants[0].temperature[0];
-var fertility = config.plants[0].fertility[0];
-var sunlight = config.plants[0].sunlight[0];
-var moisture = config.plants[0].moisture[0];
-var battery = config.plants[0].battery[0];
+var name = ""; //config.plants[0].name;
+var temperature = 0;//config.plants[0].temperature[0];
+var fertility = 0;//config.plants[0].fertility[0];
+var sunlight = 0;//config.plants[0].sunlight[0];
+var moisture = 0;//config.plants[0].moisture[0];
+var battery = 0;//config.plants[0].battery[0];
 var lastWarning = "";
 //var lastError = "";
 
-checkStatusInterval();
-//setInterval(checkStatusInterval, 60000);//once a minute
+for (i = 0; i< config.plants.length; i++){
+	checkStatusInterval(config.plants[i]);
+	setInterval(checkStatusInterval, 10000, config.plants[i]);//once a minute
+	console.log('config: %j', config.plants[i]);
+}
 
 //setTimeout(startHTMLServer, 10000);
 //startHTMLServer();
@@ -73,21 +87,23 @@ startExpressServer();
 	console.log('output: %j', data);
 }*/
 
-function checkStatusInterval(){
+function checkStatusInterval(plant){
 	if (!pythonSim){
+
+		options.args = plant.mac;//only input variable
 		PythonShell.run('demo.py', options, function (err,output){
 			if(err){
 				//handle errors from Python
 				//Don't change Values
 				//should print a warning in the page
 				d = new Date();
-				lastWarning = d.toUTCString() + "Issue with connection to the sensor";
+				plant.lastWarning = d.toUTCString() + "Issue with connection to the sensor";
 			} else {
-					temperature = output[0];
-					moisture = output[1];
-					sunlight = output[2];
-					fertility = output[3];
-					battery = output[4];
+					plant.temperature[0] = output[0];
+					plant.moisture[0] = output[1];
+					plant.sunlight[0] = output[2];
+					plant.fertility[0] = output[3];
+					plant.battery[0] = output[4];
 			}
 			//log in any case
 			console.log('output: %j', output);
@@ -95,15 +111,14 @@ function checkStatusInterval(){
 		/*PythonShell.run('demo.py', options, function (err,data){
 			errPyCallback(err,data);
 		});*/
-		setTimeout(checkStatusInterval, 60000); ///call yourself 
 
 	} else {
 	//output="Temperature="+temperature.toString()+" Moisture="+moisture.toString()+" Sunlight= "+sunlight.toString()+" Fertility="+fertility.toString();
-		temperature= Math.floor(Math.random() * 100);
-		fertility= Math.floor(Math.random() * 100);
-		sunlight= Math.floor(Math.random() * 100);
-		moisture= Math.floor(Math.random() * 100);
-		battery = Math.floor(Math.random()* 100);
+		plant.temperature[0]= Math.floor(Math.random() * 100);
+		plant.fertility[0]= Math.floor(Math.random() * 100);
+		plant.sunlight[0]= Math.floor(Math.random() * 100);
+		plant.moisture[0]= Math.floor(Math.random() * 100);
+		plant.battery[0] = Math.floor(Math.random()* 100);
 	}
 
 }
@@ -137,14 +152,15 @@ function startExpressServer(){
 	//register index
 	app.get('/', function(req, res) {
     		//res.sendFile(path.join(__dirname + '/index.html'));
-		res.render('pages/index',{
-			name: name,
-			temperature: temperature,
-			moisture: moisture,
-			sunlight: sunlight,
-			fertility: fertility,
-			battery: battery,
-			lastWarning: lastWarning,
+		res.render('pages/indexPl',{
+			plants: config.plants,
+			//name: name,
+			//temperature: config.plants[0].temperature[0],
+			//moisture: config.plants[0].moisture[0],
+			//sunlight: config.plants[0].sunlight[0],
+			//fertility: config.plants[0].fertility[0],
+			//battery: config.plants[0].battery[0],
+			//lastWarning: config.plants[0].lastWarning,
 		});
 	});
 	//register the about page

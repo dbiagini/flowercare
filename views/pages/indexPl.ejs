@@ -1,0 +1,61 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html>
+	<head>
+	<style>
+	table {
+		border-collapse: collapse;
+		width: 100%;
+	}
+	th, td {
+		padding: 8px;
+		text-align: center;
+		border-bottom: 1px solid #ddd;
+	}
+	tr:hover {background-color:#f5f5f5;}
+	</style>
+	</head>
+	<header>
+	</header>
+	<% for(var i=0; i < plants.length; i++) { %> 
+	<table height="230px" border= "1">
+    <tr align="center">
+        <td colspan="3" style="font-size: 3em; font-weight: bold" valign="bottom"> <%= plants[i].name %> </td>
+    </tr>
+    <tr align="center">
+		<td width="50px"><img src="/images/sunlight.png" alt="Sunlight" style="width:50px;height:50px;"></td>
+        <td width="60px"><a> Sunlight</a></td>
+		<td width="60px"><a><%= plants[i].sunlight[0] %> Lux</a></td>
+	</tr>
+	<tr align="center">
+        <td width="50px"><img src="/images/water.png" alt="Moisture" style="width:50px;height:50px;"></td>
+        <td width="60px"><a> Moisture</a></td>
+		<td width="60px"><a><%= plants[i].moisture[0] %>%</a></td>
+	</tr>
+	<tr align="center">
+        <td width="50px"><img src="/images/poo.png" alt="Fertility" style="width:50px;height:50px;"></td>
+        <td width="60px"><a> Fertility</a></td>
+		<td width="60px"><a><%= plants[i].fertility[0] %> uS/cm</a></td>
+	</tr>
+	<tr align="center">
+        <td width="50px"><img src="./images/temperature.png" alt="Temperature" style="width:50px;height:50px;"></td>
+        <td width="60px"><a> Temperature</a></td>
+		<td width="60px"><a><%= plants[i].temperature[0] %> C</a></td>
+	</tr>
+	</tr>
+	<tr align="center">
+        <td width="50px"><img src="./images/battery.png" alt="Battery" style="width:50px;height:50px;"></td>
+        <td width="60px"><a> Battery</a></td>
+		<td width="60px"><a><%= plants[i].battery[0] %>%</a></td>
+	</tr>
+
+	<tr align="center">
+		<td width="60px"><a>Warnings: <%= plants[i].lastWarning %></a></td>
+	</tr>
+	</table>
+<% } %>
+	<input id="refresh" type="button" onclick="window.location.reload()" value="Refresh">
+	<body>
+	</body>
+</html>
