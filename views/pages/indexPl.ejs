@@ -18,8 +18,9 @@
 	</head>
 	<header>
 	</header>
+	<div>
 	<% for(var i=0; i < plants.length; i++) { %> 
-	<table height="230px" border= "1">
+	<table border= "1" style="float: left">
     <tr align="center">
         <td colspan="3" style="font-size: 3em; font-weight: bold" valign="bottom"> <%= plants[i].name %> </td>
     </tr>
@@ -54,7 +55,8 @@
 		<td width="60px"><a>Warnings: <%= plants[i].lastWarning %></a></td>
 	</tr>
 	</table>
-<% } %>
+	<% } %>
+	</div>
 	<input id="refresh" type="button" onclick="window.location.reload()" value="Refresh">
 	<body>
 	</body>
