@@ -1,0 +1,10 @@
+#!/bin/sh
+
+node flowerServer.js &
+sleep 5 & 
+lt --port 8000 --subdomain dbiaginx &
+wait
+echo all processes closed
+
+
+

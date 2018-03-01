@@ -151,21 +151,12 @@ function startExpressServer(){
 
 	//register index
 	app.get('/', function(req, res) {
-    		//res.sendFile(path.join(__dirname + '/index.html'));
 		res.render('pages/indexPl',{
 			plants: config.plants,
-			//name: name,
-			//temperature: config.plants[0].temperature[0],
-			//moisture: config.plants[0].moisture[0],
-			//sunlight: config.plants[0].sunlight[0],
-			//fertility: config.plants[0].fertility[0],
-			//battery: config.plants[0].battery[0],
-			//lastWarning: config.plants[0].lastWarning,
 		});
 	});
 	//register the about page
 	app.get('/about', function(req, res) {
-    		//res.sendFile(path.join(__dirname + '/pages/about.html'));
 
 		res.render('pages/about');
 	});
