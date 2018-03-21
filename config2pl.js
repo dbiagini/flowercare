@@ -4,22 +4,22 @@ config.useSim = true;//false;
 
 plant0 = {
 	name : "Kawa",
-	temperature : [0,18], // |actual|min|
+	temperature : [0,20], // |actual|min|
 	fertility : [0,300],
 	sunlight : [0,1000],
-	moisture : [0,15],
-	battery : [0,10],
+	moisture : [0,150],
+	battery : [0,100],
 	lastWarning : "",
 	mac : 'C4:7C:8D:65:F8:FB', //mac address
 };
 
 plant1 = {
 	name : "Fikus",
-	temperature : [0,18], // |actual|min|
+	temperature : [0,20], // |actual|min|
 	fertility : [0,300],
 	sunlight : [0,1000],
-	moisture : [0,15],
-	battery : [0,10],
+	moisture : [0,150],
+	battery : [0,100],
 	lastWarning : "",
 	mac : 'C4:7C:8D:65:FB:FB', //mac address
 };

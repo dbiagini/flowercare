@@ -49,6 +49,17 @@ var battery = 0;//config.plants[0].battery[0];
 var lastWarning = "";
 //var lastError = "";
 
+if(config.useSim) {
+	console.log('Running Sensor simulation \n');
+	for (i = 0; i< config.plants.length; i++){
+		config.plants[i].temperature[0] = config.plants[i].temperature[1];
+		config.plants[i].fertility[0] = config.plants[i].fertility[1];
+		config.plants[i].sunlight[0] = config.plants[i].sunlight[1];
+		config.plants[i].moisture[0] = config.plants[i].moisture[1];
+		config.plants[i].battery[0] = config.plants[i].battery[1];
+	}
+
+}
 for (i = 0; i< config.plants.length; i++){
 	checkStatusInterval(config.plants[i]);
 	setInterval(checkStatusInterval, 10000, config.plants[i]);//once a minute
@@ -114,11 +125,11 @@ function checkStatusInterval(plant){
 
 	} else {
 	//output="Temperature="+temperature.toString()+" Moisture="+moisture.toString()+" Sunlight= "+sunlight.toString()+" Fertility="+fertility.toString();
-		plant.temperature[0]= Math.floor(Math.random() * 100);
-		plant.fertility[0]= Math.floor(Math.random() * 100);
-		plant.sunlight[0]= Math.floor(Math.random() * 100);
-		plant.moisture[0]= Math.floor(Math.random() * 100);
-		plant.battery[0] = Math.floor(Math.random()* 100);
+		plant.temperature[0] -= Math.floor(Math.random() * 5);
+		plant.fertility[0] -= Math.floor(Math.random() * 5);
+		plant.sunlight[0] -= Math.floor(Math.random() * 5);
+		plant.moisture[0] -= Math.floor(Math.random() * 5);
+		plant.battery[0]  -= Math.floor(Math.random()* 5);
 	}
 
 }
