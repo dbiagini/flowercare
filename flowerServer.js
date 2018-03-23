@@ -4,7 +4,7 @@ var fs = require('fs'); //require filesystem module
 var express = require('express');
 var path = require('path');
 var config =require('./config2pl');
-var pythonSim = config.useSim;
+var gpio = require('onoff').Gpio;
 
 var app = express();
 
@@ -55,14 +55,16 @@ if(config.useSim) {
 		config.plants[i].temperature[0] = config.plants[i].temperature[1];
 		config.plants[i].fertility[0] = config.plants[i].fertility[1];
 		config.plants[i].sunlight[0] = config.plants[i].sunlight[1];
-		config.plants[i].moisture[0] = config.plants[i].moisture[1];
+		config.plants[i].moisture[0] = config.plants[i].moisture[1]+20;
 		config.plants[i].battery[0] = config.plants[i].battery[1];
 	}
 
 }
 for (i = 0; i< config.plants.length; i++){
+	//initialize GPIO
+	config.plants[i].pump = new gpio(config.plants[i].gpio, 'out');
 	checkStatusInterval(config.plants[i]);
-	setInterval(checkStatusInterval, 10000, config.plants[i]);//once a minute
+	setInterval(checkStatusInterval, 20000, config.plants[i]);
 	console.log('config: %j', config.plants[i]);
 }
 
@@ -99,7 +101,7 @@ startExpressServer();
 }*/
 
 function checkStatusInterval(plant){
-	if (!pythonSim){
+	if (!config.useSim){
 
 		options.args = plant.mac;//only input variable
 		PythonShell.run('demo.py', options, function (err,output){
@@ -125,11 +127,18 @@ function checkStatusInterval(plant){
 
 	} else {
 	//output="Temperature="+temperature.toString()+" Moisture="+moisture.toString()+" Sunlight= "+sunlight.toString()+" Fertility="+fertility.toString();
-		plant.temperature[0] -= Math.floor(Math.random() * 5);
-		plant.fertility[0] -= Math.floor(Math.random() * 5);
-		plant.sunlight[0] -= Math.floor(Math.random() * 5);
+		//plant.temperature[0] -= Math.floor(Math.random() * 5);
+		//plant.fertility[0] -= Math.floor(Math.random() * 5);
+		//plant.sunlight[0] -= Math.floor(Math.random() * 5);
 		plant.moisture[0] -= Math.floor(Math.random() * 5);
-		plant.battery[0]  -= Math.floor(Math.random()* 5);
+		//plant.battery[0]  -= Math.floor(Math.random()* 5);
+	}
+
+	///after updating the status compare the water level and kick the refueling
+	if ((plant.moisture[0] < plant.moisture[1])&&(!plant.settling)){
+
+			console.log('plant: %s needs refueling ', plant.name);
+			refuelPlant(plant);
 	}
 
 }
@@ -178,3 +187,43 @@ function startExpressServer(){
 	console.log("Server running at http://127.0.0.1:8000/");
 }
 
+function refuelPlant(plant){
+
+	///
+	plant.settling = true;
+	setTimeout(settled, 120000, plant);///call the settled in minutes
+	diff = plant.moisture[2] - plant.moisture[0];
+	units = Math.floor(diff/20) ;//one unit is 25cl, increase ~20%  assuming linear model, simplistic
+	console.log("refuelding %d units \n", units);
+	///irrigate n units
+	for(i=0; i<units; i++){
+		if(plant.pump){
+	
+			if(!config.useSim) pumpToggle(plant.pump); //turn on plant
+			if(!config.useSim) setTimeout(pumpToggle, plant.unit, plant.pump);//turn it off later
+			if(config.useSim) plant.moisture[0] +=20;
+		}
+
+	}
+}
+function pumpToggle(pump){
+	if(pump)
+	{
+		if(pump.readSync == 0){
+	 		//pump is off
+			if(!config.useSim) pump.writeSync(1);
+			console.log("pump on");
+		}
+		else{
+			if(!config.useSim) {
+				pump.writeSync(0);
+			}
+			console.log("pump off");
+		}
+	} else console.log("no Pump \n");
+}
+
+
+function settled(plant){
+	plant.settling = false; ///allow irrigating
+}
