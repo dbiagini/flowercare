@@ -2,7 +2,7 @@
 
 node flowerServer.js &
 sleep 5 & 
-lt --port 8000 --subdomain dbiaginx &
+pagekite.py 8000 dabi.pagekite.me &
 wait
 echo all processes closed
 

@@ -137,7 +137,7 @@ function checkStatusInterval(plant){
 	///after updating the status compare the water level and kick the refueling
 	if ((plant.moisture[0] < plant.moisture[1])&&(!plant.settling)){
 
-			console.log('plant: %s needs refueling ', plant.name);
+			console.log('plant: %s needs refueling, moisture %d ', plant.name, plant.moisture[0]);
 			refuelPlant(plant);
 	}
 
@@ -194,17 +194,20 @@ function refuelPlant(plant){
 	setTimeout(settled, 120000, plant);///call the settled in minutes
 	diff = plant.moisture[2] - plant.moisture[0];
 	units = Math.floor(diff/20) ;//one unit is 25cl, increase ~20%  assuming linear model, simplistic
-	console.log("refuelding %d units \n", units);
+	console.log("refueling %d units \n", units);
 	///irrigate n units
 	for(i=0; i<units; i++){
 		if(plant.pump){
 	
 			if(!config.useSim) pumpToggle(plant.pump); //turn on plant
 			if(!config.useSim) setTimeout(pumpToggle, plant.unit, plant.pump);//turn it off later
-			if(config.useSim) plant.moisture[0] +=20;
+			if(config.useSim) {
+				plant.moisture[0] +=20;
+			}
 		}
 
 	}
+	console.log("plant new moisture %d \n", plant.moisture[0]);
 }
 function pumpToggle(pump){
 	if(pump)
@@ -225,5 +228,6 @@ function pumpToggle(pump){
 
 
 function settled(plant){
+	console.log("ground should be settled! \n");
 	plant.settling = false; ///allow irrigating
 }
