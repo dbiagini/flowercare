@@ -1,6 +1,7 @@
 var config = {};
 config.plants = [];
 config.useSim = true;//false;
+config.irrigate = false;
 
 plant0 = {
 	name : "Kawa",

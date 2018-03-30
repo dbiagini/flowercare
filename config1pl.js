@@ -1,6 +1,7 @@
 var config = {};
 config.plants = [];
-config.useSim = false;//false;
+config.useSim = true;//false;
+config.irrigate = false;
 
 plant0 = {
 	name : "Kawa",
@@ -16,6 +17,23 @@ plant0 = {
 	pump: null, //placeholder for gpio
 	unit : 2000 //ms in order to deliver 25cl
 };
+
+//plant0 = {
+//	name : "Fikus",
+//	temperature : [0,10,32], // |actual|min|max|
+//	fertility : [0,350,2000],
+//	sunlight : [0,2000,4000],
+//	moisture : [0,10,50], ///used as irrigation limit
+//	battery : [0,100],
+//	lastWarning : "",
+//	mac : 'C4:7C:8D:65:FB:FB', //mac address
+//	stabilizing : false, // |true|false
+//	gpio : 11, //gpio number for pump
+//	pump: null, //placeholder for GPIO
+//	unit : 2000 //ms in order to deliver 25cl
+//};
+
+
 
 
 config.plants.push(plant0);

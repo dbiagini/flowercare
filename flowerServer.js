@@ -3,8 +3,10 @@ var http = require('http');
 var fs = require('fs'); //require filesystem module
 var express = require('express');
 var path = require('path');
-var config =require('./config2pl');
-var gpio = require('onoff').Gpio;
+var config = require('./config1pl');
+var gpio = null; 
+console.log(" platform %s \n", process.platform);
+if (process.platform != "win32") gpio = require('onoff').Gpio;
 var app = express();
 
 app.use(express.static('public'))
@@ -47,11 +49,13 @@ var moisture = 0;//config.plants[0].moisture[0];
 var battery = 0;//config.plants[0].battery[0];
 var lastWarning = "";
 //var lastError = "";
-
-var statusLED = new gpio(4, 'out'); ///first pin as status led
-statusLED.writeSync(0); ///initialize the led to 0
+var statusLED = null;
 var blinkInterval = null;
-ledBlink();
+if (process.platform != "win32") {
+	statusLED = new gpio(4, 'out'); ///first pin as status led
+	statusLED.writeSync(0); ///initialize the led to 0
+	ledBlink();
+}
 if(config.useSim) {
 	console.log('Running Sensor simulation \n');
 	for (i = 0; i< config.plants.length; i++){
@@ -65,7 +69,7 @@ if(config.useSim) {
 }
 for (i = 0; i< config.plants.length; i++){
 	//initialize GPIO
-	config.plants[i].pump = new gpio(config.plants[i].gpio, 'out');
+	if(config.irrigate && (process.platform != "win32")) config.plants[i].pump = new gpio(config.plants[i].gpio, 'out');
 	checkStatusInterval(config.plants[i]);
 	setInterval(checkStatusInterval, 20000, config.plants[i]);
 	console.log('config: %j', config.plants[i]);
@@ -104,7 +108,7 @@ startExpressServer();
 	//log in any case
 	console.log('output: %j', data);
 }*/
-setTimeout(endBlink, 10000);
+if (process.platform != "win32") setTimeout(endBlink, 10000);
 
 function checkStatusInterval(plant){
 	if (!config.useSim){
@@ -141,10 +145,12 @@ function checkStatusInterval(plant){
 	}
 
 	///after updating the status compare the water level and kick the refueling
-	if ((plant.moisture[0] < plant.moisture[1])&&(!plant.settling)){
+	if(config.irrigate){	
+		if ((plant.moisture[0] < plant.moisture[1])&&(!plant.settling)){
 
-			console.log('plant: %s needs refueling, moisture %d ', plant.name, plant.moisture[0]);
-			refuelPlant(plant);
+				console.log('plant: %s needs refueling, moisture %d ', plant.name, plant.moisture[0]);
+				refuelPlant(plant);
+		}
 	}
 
 }
