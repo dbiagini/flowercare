@@ -5,7 +5,6 @@ var express = require('express');
 var path = require('path');
 var config =require('./config2pl');
 var gpio = require('onoff').Gpio;
-
 var app = express();
 
 app.use(express.static('public'))
@@ -49,6 +48,10 @@ var battery = 0;//config.plants[0].battery[0];
 var lastWarning = "";
 //var lastError = "";
 
+var statusLED = new gpio(4, 'out'); ///first pin as status led
+statusLED.writeSync(0); ///initialize the led to 0
+var blinkInterval = null;
+ledBlink();
 if(config.useSim) {
 	console.log('Running Sensor simulation \n');
 	for (i = 0; i< config.plants.length; i++){
@@ -72,6 +75,8 @@ for (i = 0; i< config.plants.length; i++){
 //startHTMLServer();
 
 startExpressServer();
+
+
 /*function buildHtml(request){
 	var header = "";
 	var body = output;
@@ -99,6 +104,7 @@ startExpressServer();
 	//log in any case
 	console.log('output: %j', data);
 }*/
+setTimeout(endBlink, 10000);
 
 function checkStatusInterval(plant){
 	if (!config.useSim){
@@ -230,4 +236,50 @@ function pumpToggle(pump){
 function settled(plant){
 	console.log("ground should be settled! \n");
 	plant.settling = false; ///allow irrigating
+}
+
+function ledToggle(){
+	if(statusLED)
+	{
+		/*var stat = statusLED.readSync();
+		console.log("status LED %d \n", stat);
+		if(stat == 0){
+			statusLED.writeSync(1);
+		}
+		else{
+			statusLED.writeSync(0);
+		}*/
+		statusLED.writeSync(statusLED.readSync() === 0 ? 1:0);
+	} else console.log("status LED not working \n");
+}
+
+function ledOn(){
+	if(statusLED)
+	{
+		statusLED.writeSync(1);
+	} else console.log("status LED not working \n");
+}
+
+function ledOff(){
+	if(statusLED)
+	{
+		statusLED.writeSync(0);
+	} else console.log("status LED not working \n");
+}
+
+function ledBlink(){
+	if(statusLED)
+	{
+		if(blinkInterval == null) blinkInterval = setInterval(ledToggle, 500);
+		else console.log("blinking interval is already set");
+	} else console.log("status LED not working \n");
+}
+
+function endBlink(){
+	if(blinkInterval)
+	{
+		clearInterval(blinkInterval);
+		statusLED.writeSync(1);
+		blinkInterval = null;
+	} else console.log("status LED not working \n");
 }

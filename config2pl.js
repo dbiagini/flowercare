@@ -12,7 +12,7 @@ plant0 = {
 	lastWarning : "",
 	mac : 'C4:7C:8D:65:F8:FB', //mac address
 	stabilizing : false, // |true|false
-	gpio : 4, //gpio number for pump
+	gpio : 10, //gpio number for pump
 	pump: null, //placeholder for gpio
 	unit : 2000 //ms in order to deliver 25cl
 };
@@ -27,7 +27,7 @@ plant1 = {
 	lastWarning : "",
 	mac : 'C4:7C:8D:65:FB:FB', //mac address
 	stabilizing : false, // |true|false
-	gpio : 4, //gpio number for pump
+	gpio : 11, //gpio number for pump
 	pump: null, //placeholder for GPIO
 	unit : 2000 //ms in order to deliver 25cl
 };
