@@ -71,7 +71,7 @@ for (i = 0; i< config.plants.length; i++){
 	//initialize GPIO
 	if(config.irrigate && (process.platform != "win32")) config.plants[i].pump = new gpio(config.plants[i].gpio, 'out');
 	checkStatusInterval(config.plants[i]);
-	setInterval(checkStatusInterval, 20000, config.plants[i]);
+	setInterval(checkStatusInterval, 1800000, config.plants[i]);//every half an hour update
 	console.log('config: %j', config.plants[i]);
 }
 

@@ -1,6 +1,6 @@
 var config = {};
 config.plants = [];
-config.useSim = true;//false;
+config.useSim = false;
 config.irrigate = false;
 
 plant0 = {
