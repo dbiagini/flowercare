@@ -1,6 +1,6 @@
 var config = {};
 config.plants = [];
-config.useSim = true;//false;
+config.useSim = false;
 config.irrigate = false;
 
 plant0 = {
@@ -13,7 +13,7 @@ plant0 = {
 	lastWarning : "",
 	mac : 'C4:7C:8D:65:F8:FB', //mac address
 	stabilizing : false, // |true|false
-	gpio : 10, //gpio number for pump
+	gpio : 17, //gpio number for pump
 	pump: null, //placeholder for gpio
 	unit : 2000 //ms in order to deliver 25cl
 };
@@ -26,9 +26,9 @@ plant1 = {
 	moisture : [0,10,50], ///used as irrigation limit
 	battery : [0,100],
 	lastWarning : "",
-	mac : 'C4:7C:8D:65:FB:FB', //mac address
+	mac : 'C4:7C:8D:65:FB:29', //mac address
 	stabilizing : false, // |true|false
-	gpio : 11, //gpio number for pump
+	gpio : 18, //gpio number for pump
 	pump: null, //placeholder for GPIO
 	unit : 2000 //ms in order to deliver 25cl
 };

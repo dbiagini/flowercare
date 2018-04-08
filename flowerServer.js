@@ -4,6 +4,7 @@ var fs = require('fs'); //require filesystem module
 var express = require('express');
 var path = require('path');
 var config = require('./config1pl');
+//var config = require('./config2pl');
 var gpio = null; 
 console.log(" platform %s \n", process.platform);
 if (process.platform != "win32") gpio = require('onoff').Gpio;
@@ -69,9 +70,17 @@ if(config.useSim) {
 }
 for (i = 0; i< config.plants.length; i++){
 	//initialize GPIO
-	if(config.irrigate && (process.platform != "win32")) config.plants[i].pump = new gpio(config.plants[i].gpio, 'out');
+	if(config.irrigate && (process.platform != "win32")){
+		config.plants[i].pump = new gpio(config.plants[i].gpio, 'out');
+		config.plants[i].pump.writeSync(0); ///initialize the pump to 0
+	}
 	checkStatusInterval(config.plants[i]);
-	setInterval(checkStatusInterval, 1800000, config.plants[i]);//every half an hour update
+	if(!config.useSim){ 
+		setInterval(checkStatusInterval, 1800000, config.plants[i]);//every half an hour update
+	} else { 
+		setInterval(checkStatusInterval, 20000, config.plants[i]);//every 10 minutes an hour update
+		console.log('been here');
+	}
 	console.log('config: %j', config.plants[i]);
 }
 
@@ -140,8 +149,9 @@ function checkStatusInterval(plant){
 		//plant.temperature[0] -= Math.floor(Math.random() * 5);
 		//plant.fertility[0] -= Math.floor(Math.random() * 5);
 		//plant.sunlight[0] -= Math.floor(Math.random() * 5);
-		plant.moisture[0] -= Math.floor(Math.random() * 5);
+		plant.moisture[0] -= Math.floor(Math.random() * 10);
 		//plant.battery[0]  -= Math.floor(Math.random()* 5);
+		console.log('plant: %s, sim moisture %d ', plant.name, plant.moisture[0]);
 	}
 
 	///after updating the status compare the water level and kick the refueling
@@ -208,23 +218,21 @@ function refuelPlant(plant){
 	units = Math.floor(diff/20) ;//one unit is 25cl, increase ~20%  assuming linear model, simplistic
 	console.log("refueling %d units \n", units);
 	///irrigate n units
-	for(i=0; i<units; i++){
-		if(plant.pump){
-	
-			if(!config.useSim) pumpToggle(plant.pump); //turn on plant
-			if(!config.useSim) setTimeout(pumpToggle, plant.unit, plant.pump);//turn it off later
-			if(config.useSim) {
-				plant.moisture[0] +=20;
-			}
-		}
+	if(plant.pump){
 
+		/*if(!config.useSim)*/ pumpOn(plant.pump); //turn on plant
+		/*if(!config.useSim)*/ setTimeout(pumpOff, (plant.unit * units), plant.pump);//turn it off later
+		if(config.useSim) {
+			plant.moisture[0] +=(20 * units);
+		}
 	}
-	console.log("plant new moisture %d \n", plant.moisture[0]);
+
+	//console.log("plant new moisture %d \n", plant.moisture[0]);
 }
 function pumpToggle(pump){
 	if(pump)
 	{
-		if(pump.readSync == 0){
+		/*if(pump.readSync == 0){
 	 		//pump is off
 			if(!config.useSim) pump.writeSync(1);
 			console.log("pump on");
@@ -234,10 +242,28 @@ function pumpToggle(pump){
 				pump.writeSync(0);
 			}
 			console.log("pump off");
-		}
+		}*/
+
+		pump.writeSync(statusLED.readSync() === 0 ? 1:0);
 	} else console.log("no Pump \n");
 }
 
+function pumpOn(pump){
+	if(pump)
+	{
+		pump.writeSync(1);
+		console.log("Pump on \n");
+
+	} else console.log("no Pump \n");
+}
+
+function pumpOff(pump){
+	if(pump)
+	{
+		pump.writeSync(0);
+		console.log("Pump off \n");
+	} else console.log("no Pump \n");
+}
 
 function settled(plant){
 	console.log("ground should be settled! \n");
