@@ -59,28 +59,28 @@
     	<tr class="notfirst" align="center">
 		<td width="50px"><img src="/images/sunlight.png" alt="Sunlight" style="width:50px;height:50px;"></td>
         <td width="60px"><a> Sunlight</a></td>
-		<td width="60px"><a><%= plants[i].sunlight[0] %> Lux</a></td>
+		<td width="60px" <% if(plants[i].sunlight[0]<plants[i].sunlight[1]) {%> bgcolor= "#f44b42"<% } %> ><a><%= plants[i].sunlight[0] %> Lux</a></td>
 	</tr>
 	<tr class="notfirst" align="center">
         <td width="50px"><img src="/images/water.png" alt="Moisture" style="width:50px;height:50px;"></td>
         <td width="60px"><a> Moisture</a></td>
-		<td width="60px"><a><%= plants[i].moisture[0] %>%</a></td>
+		<td width="60px" <% if(plants[i].moisture[0]<plants[i].moisture[1]) {%> bgcolor= "#f44b42"<% } %> ><a><%= plants[i].moisture[0] %>%</a></td>
 	</tr>
 	<tr class="notfirst" align="center">
         <td width="50px"><img src="/images/poo.png" alt="Fertility" style="width:50px;height:50px;"></td>
         <td width="60px"><a> Fertility</a></td>
-		<td width="60px"><a><%= plants[i].fertility[0] %> uS/cm</a></td>
+		<td width="60px" <% if(plants[i].fertility[0]<plants[i].fertility[1]) {%> bgcolor= "#f44b42"<% } %> ><a><%= plants[i].fertility[0] %> uS/cm</a></td>
 	</tr>
 	<tr class="notfirst" align="center">
         <td width="50px"><img src="./images/temperature.png" alt="Temperature" style="width:50px;height:50px;"></td>
         <td width="60px"><a> Temperature</a></td>
-		<td width="60px"><a><%= plants[i].temperature[0] %> C</a></td>
+		<td width="60px" <% if(plants[i].temperature[0]<plants[i].temperature[1]) {%> bgcolor= "#f44b42"<% } %> ><a><%= plants[i].temperature[0] %> C</a></td>
 	</tr>
 	</tr>
 	<tr class="notfirst" align="center">
         <td width="50px"><img src="./images/battery.png" alt="Battery" style="width:50px;height:50px;"></td>
         <td width="60px"><a> Battery</a></td>
-		<td width="60px"><a><%= plants[i].battery[0] %>%</a></td>
+		<td width="60px"  <% if(plants[i].battery[0]<plants[i].battery[1]) {%> bgcolor= "#f44b42"<% } %> ><a><%= plants[i].battery[0] %>%</a></td>
 	</tr>
 
 	<tr class="notfirst" align="center">
