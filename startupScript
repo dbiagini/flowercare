@@ -1,6 +1,6 @@
 #!/bin/sh
 cd /home/pi/Projects/flowercare
-node flowerServer.js &
+node flowerServer.js &>flowerlog.log &
 sleep 5 & 
 pagekite.py 8000 dabi.pagekite.me &
 wait

@@ -117,7 +117,7 @@ startExpressServer();
 	//log in any case
 	console.log('output: %j', data);
 }*/
-if (process.platform != "win32") setTimeout(endBlink, 10000);
+if (process.platform != "win32") setTimeout(function() { endBlink(); for (i = 0; i< config.plants.length; i++) settled(config.plants[i]); } , 10000);
 
 function checkStatusInterval(plant){
 	if (!config.useSim){
@@ -156,9 +156,9 @@ function checkStatusInterval(plant){
 
 	///after updating the status compare the water level and kick the refueling
 	if(config.irrigate){	
-		if ((plant.moisture[0] < plant.moisture[1])&&(!plant.settling)){
+		if ((plant.moisture[0] < plant.moisture[1]) && (!plant.settling)){
 
-				console.log('plant: %s needs refueling, moisture %d ', plant.name, plant.moisture[0]);
+				console.log('plant: %s needs refueling, moisture %d settling %d ', plant.name, plant.moisture[0], plant.settling);
 				refuelPlant(plant);
 		}
 	}
