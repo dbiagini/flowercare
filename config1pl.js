@@ -15,7 +15,8 @@ plant0 = {
 	settling : true, // |true|false //start true as sensor is slow
 	gpio : 14, //gpio number for pump
 	pump: null, //placeholder for gpio
-	unit : 20000 //ms in order to deliver 25cl
+	unit : 20000, //ms in order to deliver 25cl
+	maxUnits : 3 //max value to irrigate
 };
 
 //plant0 = {

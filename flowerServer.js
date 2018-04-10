@@ -215,7 +215,8 @@ function refuelPlant(plant){
 	plant.settling = true;
 	setTimeout(settled, 120000, plant);///call the settled in minutes
 	diff = plant.moisture[2] - plant.moisture[0];
-	units = Math.floor(diff/20) ;//one unit is 25cl, increase ~20%  assuming linear model, simplistic
+	units = Math.abs(Math.floor(diff/20));//one unit is 25cl, increase ~20%  assuming linear model, simplistic
+	if(units >= plant.maxUnits) units=plant.maxUnits; //limitate max irrigation
 	console.log("refueling %d units \n", units);
 	///irrigate n units
 	if(plant.pump){
