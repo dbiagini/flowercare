@@ -52,6 +52,7 @@ var lastWarning = "";
 //var lastError = "";
 var statusLED = null;
 var blinkInterval = null;
+var sensorStartingUp = true;
 if (process.platform != "win32") {
 	statusLED = new gpio(4, 'out'); ///first pin as status led
 	statusLED.writeSync(0); ///initialize the led to 0
@@ -76,7 +77,7 @@ for (i = 0; i< config.plants.length; i++){
 	}
 	checkStatusInterval(config.plants[i]);
 	if(!config.useSim){ 
-		setInterval(checkStatusInterval, 1800000, config.plants[i]);//every half an hour update
+		setInterval(checkStatusInterval, 90000, config.plants[i]);//every half an hour(180k) update
 	} else { 
 		setInterval(checkStatusInterval, 20000, config.plants[i]);//every 10 minutes an hour update
 		console.log('been here');
@@ -117,7 +118,7 @@ startExpressServer();
 	//log in any case
 	console.log('output: %j', data);
 }*/
-if (process.platform != "win32") setTimeout(function() { endBlink(); for (i = 0; i< config.plants.length; i++) settled(config.plants[i]); } , 10000);
+if (process.platform != "win32") setTimeout(function() { endBlink(); } , 10000);
 
 function checkStatusInterval(plant){
 	if (!config.useSim){
@@ -154,14 +155,27 @@ function checkStatusInterval(plant){
 		console.log('plant: %s, sim moisture %d ', plant.name, plant.moisture[0]);
 	}
 
-	///after updating the status compare the water level and kick the refueling
-	if(config.irrigate){	
-		if ((plant.moisture[0] < plant.moisture[1]) && (!plant.settling)){
+	///after updating the status compare the water level and kick the refueling // plant settling is set true during the first irrigation and turned of when the 
+	if(config.irrigate && (!sensorStartingUp)){	
+		if ((((plant.moisture[0] <= plant.moisture[1]) && (!plant.settling)) || ((plant.moisture[0] > plant.moisture[1]) && (plant.moisture[0] < plant.moisture[2]) && (plant.settling))) && (plant.refuelCounter <= plant.maxUnits)){
 
 				console.log('plant: %s needs refueling, moisture %d settling %d ', plant.name, plant.moisture[0], plant.settling);
 				refuelPlant(plant);
+		} else if (plant.moisture[0] >= plant.moisture[2]) {
+			plant.settling = false; //finished refueling.
+			plant.refuelCounter = 0;//reset limit counter
+		} else if ((plant.moisture[0] <= plant.moisture[1]) && (plant.settling)){
+		  ///something is wrong the refueling happened and it's not having effects
+			plant.lastWarning = d.toUTCString() + "ERROR refueling failed or Sensor not responding";
+			console.log('ERROR: plant: %s, sim moisture %d refueling or Sensor not working!!!', plant.name, plant.moisture[0]);
+
+		} else if (plant.refuelCounter > plant.maxUnits){
+			plant.lastWarning = d.toUTCString() + "ERROR irrigation units reached the limit";
+			plant.settling = false; //let the plant settle.
+			console.log('ERROR: plant: %s, sim moisture %d irrigation units reached the limit # %d !!!', plant.name, plant.moisture[0], plant.refuelCounter);
 		}
 	}
+			  ///  (min<plant moisture<max) ||
 
 }
 
@@ -213,10 +227,10 @@ function refuelPlant(plant){
 
 	///
 	plant.settling = true;
-	setTimeout(settled, 120000, plant);///call the settled in minutes
 	diff = plant.moisture[2] - plant.moisture[0];
-	units = Math.abs(Math.floor(diff/20));//one unit is 25cl, increase ~20%  assuming linear model, simplistic
+	units = Math.abs(Math.ceil(diff/20));//one unit is 25cl, increase ~20%  assuming linear model, simplistic
 	if(units >= plant.maxUnits) units=plant.maxUnits; //limitate max irrigation
+	plant.refuelCounter+= units;//increment limit counter
 	console.log("refueling %d units \n", units);
 	///irrigate n units
 	if(plant.pump){
@@ -314,5 +328,6 @@ function endBlink(){
 		clearInterval(blinkInterval);
 		statusLED.writeSync(1);
 		blinkInterval = null;
+		sensorStartingUp = false; //assume sensor settled 
 	} else console.log("status LED not working \n");
 }

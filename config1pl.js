@@ -16,7 +16,8 @@ plant0 = {
 	gpio : 14, //gpio number for pump
 	pump: null, //placeholder for gpio
 	unit : 20000, //ms in order to deliver 25cl
-	maxUnits : 3 //max value to irrigate
+	maxUnits : 5, //max value to irrigate
+	refuelCounter : 0 //counter used to check max refuel
 };
 
 //plant0 = {
