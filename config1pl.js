@@ -12,11 +12,11 @@ plant0 = {
 	battery : [0,100],
 	lastWarning : "",
 	mac : 'C4:7C:8D:65:F8:FB', //mac address
-	settling : true, // |true|false //start false
+	settling : false, // |true|false //start false
 	gpio : 14, //gpio number for pump
 	pump: null, //placeholder for gpio
 	unit : 20000, //ms in order to deliver 25cl
-	maxUnits : 5, //max value to irrigate
+	maxUnits : 7, //max value to irrigate
 	refuelCounter : 0 //counter used to check max refuel
 };
 

@@ -166,13 +166,15 @@ function checkStatusInterval(plant){
 			plant.refuelCounter = 0;//reset limit counter
 		} else if ((plant.moisture[0] <= plant.moisture[1]) && (plant.settling)){
 		  ///something is wrong the refueling happened and it's not having effects
-			plant.lastWarning = d.toUTCString() + "ERROR refueling failed or Sensor not responding";
-			console.log('ERROR: plant: %s, sim moisture %d refueling or Sensor not working!!!', plant.name, plant.moisture[0]);
+			d = new Date();
+			plant.lastWarning = d.toUTCString() + " ERROR refueling failed or Sensor not responding";
+			console.log('ERROR: plant: %s, moisture %d refueling or Sensor not working!!!', plant.name, plant.moisture[0]);
 
 		} else if (plant.refuelCounter > plant.maxUnits){
-			plant.lastWarning = d.toUTCString() + "ERROR irrigation units reached the limit";
+			d = new Date();
+			plant.lastWarning = d.toUTCString() + " ERROR irrigation units reached the limit";
 			plant.settling = false; //let the plant settle.
-			console.log('ERROR: plant: %s, sim moisture %d irrigation units reached the limit # %d !!!', plant.name, plant.moisture[0], plant.refuelCounter);
+			console.log('ERROR: plant: %s, moisture %d irrigation units reached the limit # %d !!!', plant.name, plant.moisture[0], plant.refuelCounter);
 		}
 	}
 			  ///  (min<plant moisture<max) ||
