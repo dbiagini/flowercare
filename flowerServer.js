@@ -124,7 +124,7 @@ function checkStatusInterval(plant){
 	if (!config.useSim){
 
 		options.args = plant.mac;//only input variable
-		PythonShell.run('demo.py', options, function (err,output){
+		/*PythonShell.run('demo.py', options, function (err,output){
 			if(err){
 				//handle errors from Python
 				//Don't change Values
@@ -140,10 +140,10 @@ function checkStatusInterval(plant){
 			}
 			//log in any case
 			console.log('output: %j', output);
-		});
-		/*PythonShell.run('demo.py', options, function (err,data){
-			errPyCallback(err,data);
 		});*/
+		PythonShell.run('demo.py', options, function (err,data){
+			handlePostcheck(err, data, plant);
+		});
 
 	} else {
 	//output="Temperature="+temperature.toString()+" Moisture="+moisture.toString()+" Sunlight= "+sunlight.toString()+" Fertility="+fertility.toString();
@@ -153,9 +153,59 @@ function checkStatusInterval(plant){
 		plant.moisture[0] -= Math.floor(Math.random() * 10);
 		//plant.battery[0]  -= Math.floor(Math.random()* 5);
 		console.log('plant: %s, sim moisture %d ', plant.name, plant.moisture[0]);
+		checkIrrigate(plant);
 	}
 
 	///after updating the status compare the water level and kick the refueling // plant settling is set true during the first irrigation and turned of when the 
+	/*if(config.irrigate && (!sensorStartingUp)){	
+		if ((((plant.moisture[0] <= plant.moisture[1]) && (!plant.settling)) || ((plant.moisture[0] > plant.moisture[1]) && (plant.moisture[0] < plant.moisture[2]) && (plant.settling))) && (plant.refuelCounter <= plant.maxUnits)){
+
+				console.log('plant: %s needs refueling, moisture %d settling %d ', plant.name, plant.moisture[0], plant.settling);
+				refuelPlant(plant);
+		} else if (plant.moisture[0] >= plant.moisture[2]) {
+			plant.settling = false; //finished refueling.
+			plant.refuelCounter = 0;//reset limit counter
+		} else if ((plant.moisture[0] <= plant.moisture[1]) && (plant.settling)){
+		  ///something is wrong the refueling happened and it's not having effects
+			d = new Date();
+			plant.lastWarning = d.toUTCString() + " ERROR refueling failed or Sensor not responding";
+			console.log('ERROR: plant: %s, moisture %d refueling or Sensor not working!!!', plant.name, plant.moisture[0]);
+
+		} else if (plant.refuelCounter > plant.maxUnits){
+			d = new Date();
+			plant.lastWarning = d.toUTCString() + " ERROR irrigation units reached the limit";
+			plant.settling = false; //let the plant settle.
+			console.log('ERROR: plant: %s, moisture %d irrigation units reached the limit # %d !!!', plant.name, plant.moisture[0], plant.refuelCounter);
+		}
+	}*/
+			  ///  (min<plant moisture<max) ||
+
+}
+
+function handlePostcheck(err, output, plant){
+
+	if(err){
+		//handle errors from Python
+		//Don't change Values
+		//should print a warning in the page
+		d = new Date();
+		plant.lastWarning = d.toUTCString() + "Issue with connection to the sensor";
+	} else {
+			plant.temperature[0] = output[0];
+			plant.moisture[0] = output[1];
+			plant.sunlight[0] = output[2];
+			plant.fertility[0] = output[3];
+			plant.battery[0] = output[4];
+	}
+	//log in any case
+	console.log('output: %j', output);
+
+	checkIrrigate(plant); //values should be updated by now.
+
+}
+
+function checkIrrigate(plant){
+///after updating the status compare the water level and kick the refueling // plant settling is set true during the first irrigation and turned of when the 
 	if(config.irrigate && (!sensorStartingUp)){	
 		if ((((plant.moisture[0] <= plant.moisture[1]) && (!plant.settling)) || ((plant.moisture[0] > plant.moisture[1]) && (plant.moisture[0] < plant.moisture[2]) && (plant.settling))) && (plant.refuelCounter <= plant.maxUnits)){
 
@@ -177,9 +227,8 @@ function checkStatusInterval(plant){
 			console.log('ERROR: plant: %s, moisture %d irrigation units reached the limit # %d !!!', plant.name, plant.moisture[0], plant.refuelCounter);
 		}
 	}
-			  ///  (min<plant moisture<max) ||
-
 }
+
 
 function startHTMLServer(){
 //Configure http server to respond
