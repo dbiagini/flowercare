@@ -1,6 +1,9 @@
 #!/bin/sh
 cd /home/pi/Projects/flowercare
-node flowerServer.js &>flowerlog.log &
+
+exec &> capture.txt
+tail -f capture.txt >/dev/tty7 &
+node flowerServer.js &
 sleep 5 & 
 pagekite.py 8000 dabi.pagekite.me &
 wait

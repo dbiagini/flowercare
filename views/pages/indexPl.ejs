@@ -80,7 +80,7 @@
 	<tr class="notfirst" align="center">
         <td width="50px"><img src="./images/battery.png" alt="Battery" style="width:50px;height:50px;"></td>
         <td width="60px"><a> Battery</a></td>
-		<td width="60px"  <% if(plants[i].battery[0]<plants[i].battery[1]) {%> bgcolor= "#f44b42"<% } %> ><a><%= plants[i].battery[0] %>%</a></td>
+		<td width="60px"  <% if(plants[i].battery[0]<20) {%> bgcolor= "#f44b42"<% } %> ><a><%= plants[i].battery[0] %>%</a></td>
 	</tr>
 
 	<tr class="notfirst" align="center">
