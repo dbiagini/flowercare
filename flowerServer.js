@@ -3,7 +3,7 @@ var http = require('http');
 var fs = require('fs'); //require filesystem module
 var express = require('express');
 var path = require('path');
-var config = require('./config1pl');
+var config = require('./config2pl');
 //var config = require('./config2pl');
 var gpio = null; 
 console.log(" platform %s \n", process.platform);
