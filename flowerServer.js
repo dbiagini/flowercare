@@ -10,6 +10,9 @@ console.log(" platform %s \n", process.platform);
 if (process.platform != "win32") gpio = require('onoff').Gpio;
 var app = express();
 
+timeOfStart = new Date(Date.now()).toLocaleString();
+console.log(timeOfStart);
+
 app.use(express.static('public'))
 //app.use(express.static(__dirname + '/public'));
 
@@ -77,9 +80,9 @@ for (i = 0; i< config.plants.length; i++){
 	}
 	checkStatusInterval(config.plants[i]);
 	if(!config.useSim){ 
-		setInterval(checkStatusInterval, 90000, config.plants[i]);//every half an hour(180k) update
+		setInterval(checkStatusInterval, config.interval, config.plants[i]);//every half an hour(1.8M) update
 	} else { 
-		setInterval(checkStatusInterval, 20000, config.plants[i]);//every 10 minutes an hour update
+		setInterval(checkStatusInterval, config.intervalSim, config.plants[i]);//every 10 minutes an hour update
 		console.log('been here');
 	}
 	console.log('config: %j', config.plants[i]);

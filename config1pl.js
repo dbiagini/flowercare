@@ -2,6 +2,8 @@ var config = {};
 config.plants = [];
 config.useSim = false;
 config.irrigate = true;
+config.interval = 900000; //ms for a normal loop
+config.intervalSim = 60000; //one minute for simulation
 
 plant0 = {
 	name : "Kawa",
