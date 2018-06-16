@@ -1,8 +1,9 @@
 var config = {};
 config.plants = [];
 config.useSim = false;
-config.irrigate = false;
-config.interval = 900000; //ms for a normal loop
+config.irrigate = true;
+config.debug = true;
+config.interval = 300000; //900000; //ms for a normal loop
 config.intervalSim = 60000; //one minute for simulation
 
 plant0 = {

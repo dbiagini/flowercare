@@ -214,9 +214,10 @@ function checkIrrigate(plant){
 
 				console.log('plant: %s needs refueling, moisture %d settling %d ', plant.name, plant.moisture[0], plant.settling);
 				refuelPlant(plant);
-		} else if (plant.moisture[0] >= plant.moisture[2]) {
+		} else if ((plant.moisture[0] >= plant.moisture[2]) && (plant.settling)) {
 			plant.settling = false; //finished refueling.
 			plant.refuelCounter = 0;//reset limit counter
+			console.log('plant: %s finished refueling, moisture %d settling %d ', plant.name, plant.moisture[0], plant.settling);
 		} else if ((plant.moisture[0] <= plant.moisture[1]) && (plant.settling)){
 		  ///something is wrong the refueling happened and it's not having effects
 			d = new Date();
@@ -228,7 +229,14 @@ function checkIrrigate(plant){
 			plant.lastWarning = d.toUTCString() + " ERROR irrigation units reached the limit";
 			plant.settling = false; //let the plant settle.
 			console.log('ERROR: plant: %s, moisture %d irrigation units reached the limit # %d !!!', plant.name, plant.moisture[0], plant.refuelCounter);
+		} else {
+		//debug string//
+		if(config.debug) console.log('plant: %s no irrigation, moisture %d settling %d sensorStarted %d refuelCounter %d irrigate %b', plant.name, plant.moisture[0], plant.settling, sensorStartingUp, plant.refuelCounter, config.irrigate);
+				
 		}
+	} else {
+		//debug string//
+		if(config.debug) console.log('plant: %s status, moisture %d settling %d sensorStarted %d refuelCounter %d irrigate %b', plant.name, plant.moisture[0], plant.settling, sensorStartingUp, plant.refuelCounter, config.irrigate);
 	}
 }
 
