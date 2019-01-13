@@ -3,7 +3,7 @@ config.plants = [];
 config.useSim = false;
 config.irrigate = true;
 config.debug = true;
-config.interval = 300000; //900000; //ms for a normal loop
+config.interval = 900000; //300000; //900000; //ms for a normal loop
 config.intervalSim = 60000; //one minute for simulation
 
 plant0 = {
@@ -11,7 +11,7 @@ plant0 = {
 	temperature : [0,10,32], // |actual|min|max|
 	fertility : [0,350,2000],
 	sunlight : [0,2000,4000],
-	moisture : [0,15,40],//used as irrigation limit
+	moisture : [0,20,40],//used as irrigation limit
 	battery : [0,100],
 	lastWarning : "",
 	mac : 'C4:7C:8D:65:F8:FB', //mac address

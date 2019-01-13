@@ -1,0 +1,20 @@
+#!/bin/sh
+#/etc/init.d/myService
+export PATH=$PATH:/usr/local/bin
+export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
+
+case "$1" in
+start)
+exec screen -d -m /home/pi/Projects/flowercare/startupScript
+;;
+stop)
+SESSIONPID=$(exec screen -list | grep Detached | awk -F "." '{print $1}')
+#exec echo $SESSIONPID
+exec screen -S $SESSIONPID -X quit
+;;
+*)
+echo "Usage: /etc/init.d/flowercara {start|stop}"
+exit 1
+;;
+esac
+exit 0
