@@ -1,21 +1,21 @@
+"use strict";
 // Load the http module
 var http = require('http');
 var fs = require('fs'); //require filesystem module
-var express = require('express');
 var path = require('path');
 var config = require('./config2pl_sim');
 var gpio = null; 
+var srv = require('./htmlServer');
 console.log(" platform %s \n", process.platform);
 if (process.platform != "win32") gpio = require('onoff').Gpio;
-var app = express();
+const server = new srv();
 
-timeOfStart = new Date(Date.now()).toLocaleString();
+const timeOfStart = new Date(Date.now()).toLocaleString();
 console.log(timeOfStart);
 
-app.use(express.static('public'))
 
-//set the view engine to ejs
-app.set('view engine', 'ejs');
+
+server.init();
 
 var PythonShell = require('python-shell');
 var options = {
@@ -28,7 +28,6 @@ var options = {
 
 
 var output= '';
-var server;
 var html;
 var userCount = 0;
 var name = ""; //config.plants[0].name;
@@ -58,7 +57,7 @@ if(config.useSim) {
 	}
 
 }
-for (i = 0; i< config.plants.length; i++){
+for (var i = 0; i< config.plants.length; i++){
 	//initialize GPIO
 	if(config.irrigate && (process.platform != "win32")){
 		config.plants[i].pump = new gpio(config.plants[i].gpio, 'out');
@@ -75,8 +74,7 @@ for (i = 0; i< config.plants.length; i++){
 }
 
 
-startExpressServer();
-
+server.start(config.plants); //pass the array of plants
 
 if (process.platform != "win32") setTimeout(function() { endBlink(); } , 10000);
 
@@ -157,49 +155,6 @@ function checkIrrigate(plant){
 }
 
 
-function startHTMLServer(){
-//Configure http server to respond
-
-server = http.createServer(httpHandler)
-
-//Listen on port
-server.listen(8000);
-//Put a friendly message on the terminal
-console.log("Server running at http://127.0.0.1:8000/");
-}
-
-function httpHandler (request, response) { //create server
-  fs.readFile('./index.html', function(err, data) { //read file index.html in public folder
-    if (err) {
-      response.writeHead(404, {'Content-Type': 'text/html'}); //display 404 on error
-      return response.end("404 Not Found");
-    }
-    response.writeHead(200, {'Content-Type': 'text/html'}); //write HTML
-    response.write(data); //write data from index.html
-    response.write("We have "+userCount+" visits \n");
-    response.write(" "+output+" \n");
-    return response.end();
-  });
-}
-function startExpressServer(){
-
-	//register index
-	app.get('/', function(req, res) {
-		res.render('pages/indexPl',{
-			plants: config.plants,
-		});
-	});
-	//register the about page
-	app.get('/about', function(req, res) {
-
-		res.render('pages/about');
-	});
-
-
-	app.listen(8000);
-
-	console.log("Server running at http://127.0.0.1:8000/");
-}
 
 function refuelPlant(plant){
 
