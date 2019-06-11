@@ -3,8 +3,7 @@ var http = require('http');
 var fs = require('fs'); //require filesystem module
 var express = require('express');
 var path = require('path');
-var config = require('./config2pl');
-//var config = require('./config2pl');
+var config = require('./config2pl_sim');
 var gpio = null; 
 console.log(" platform %s \n", process.platform);
 if (process.platform != "win32") gpio = require('onoff').Gpio;
@@ -14,7 +13,6 @@ timeOfStart = new Date(Date.now()).toLocaleString();
 console.log(timeOfStart);
 
 app.use(express.static('public'))
-//app.use(express.static(__dirname + '/public'));
 
 //set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -29,18 +27,6 @@ var options = {
 };
 
 
-/*plant0 = {
-	name : "Kawa",
-	temperature : [0,18], // |actual|min|
-	fertility : [0,300],
-	sunlight : [0,1000],
-	moisture : [0,15],
-	battery : [0,10],
-	lastWarning : "",
-	mac : 'C4:7C:8D:65:F8:FB', //mac address
-};*/
-
-//var pyshell = new PythonShell(myPython);
 var output= '';
 var server;
 var html;
@@ -88,63 +74,17 @@ for (i = 0; i< config.plants.length; i++){
 	console.log('config: %j', config.plants[i]);
 }
 
-//setTimeout(startHTMLServer, 10000);
-//startHTMLServer();
 
 startExpressServer();
 
 
-/*function buildHtml(request){
-	var header = "";
-	var body = output;
-
-	return '<!DOCTYPE html>' + '<html><header>' + header + '</header><body>' + body + '</body></html>';
-
-}*/
-
-///not used
-/*function errPyCallback(err,data) {
-	if(err){
-		//handle errors from Python
-		//Don't change Values
-		//should print a warning in the page
-		d = new Date();
-		lastWarning = d.toUTCString() + "Issue with connection to the sensor";
-	} else {
-			temperature = data[0];
-			moisture = data[1];
-			sunlight = data[2];
-			fertility = data[3];
-			battery = data[4];
-			lastWarning = "";
-	}
-	//log in any case
-	console.log('output: %j', data);
-}*/
 if (process.platform != "win32") setTimeout(function() { endBlink(); } , 10000);
 
 function checkStatusInterval(plant){
 	if (!config.useSim){
 
 		options.args = plant.mac;//only input variable
-		/*PythonShell.run('demo.py', options, function (err,output){
-			if(err){
-				//handle errors from Python
-				//Don't change Values
-				//should print a warning in the page
-				d = new Date();
-				plant.lastWarning = d.toUTCString() + "Issue with connection to the sensor";
-			} else {
-					plant.temperature[0] = output[0];
-					plant.moisture[0] = output[1];
-					plant.sunlight[0] = output[2];
-					plant.fertility[0] = output[3];
-					plant.battery[0] = output[4];
-			}
-			//log in any case
-			console.log('output: %j', output);
-		});*/
-		PythonShell.run('demo.py', options, function (err,data){
+			PythonShell.run('demo.py', options, function (err,data){
 			handlePostcheck(err, data, plant);
 		});
 
@@ -158,30 +98,6 @@ function checkStatusInterval(plant){
 		console.log('plant: %s, sim moisture %d ', plant.name, plant.moisture[0]);
 		checkIrrigate(plant);
 	}
-
-	///after updating the status compare the water level and kick the refueling // plant settling is set true during the first irrigation and turned of when the 
-	/*if(config.irrigate && (!sensorStartingUp)){	
-		if ((((plant.moisture[0] <= plant.moisture[1]) && (!plant.settling)) || ((plant.moisture[0] > plant.moisture[1]) && (plant.moisture[0] < plant.moisture[2]) && (plant.settling))) && (plant.refuelCounter <= plant.maxUnits)){
-
-				console.log('plant: %s needs refueling, moisture %d settling %d ', plant.name, plant.moisture[0], plant.settling);
-				refuelPlant(plant);
-		} else if (plant.moisture[0] >= plant.moisture[2]) {
-			plant.settling = false; //finished refueling.
-			plant.refuelCounter = 0;//reset limit counter
-		} else if ((plant.moisture[0] <= plant.moisture[1]) && (plant.settling)){
-		  ///something is wrong the refueling happened and it's not having effects
-			d = new Date();
-			plant.lastWarning = d.toUTCString() + " ERROR refueling failed or Sensor not responding";
-			console.log('ERROR: plant: %s, moisture %d refueling or Sensor not working!!!', plant.name, plant.moisture[0]);
-
-		} else if (plant.refuelCounter > plant.maxUnits){
-			d = new Date();
-			plant.lastWarning = d.toUTCString() + " ERROR irrigation units reached the limit";
-			plant.settling = false; //let the plant settle.
-			console.log('ERROR: plant: %s, moisture %d irrigation units reached the limit # %d !!!', plant.name, plant.moisture[0], plant.refuelCounter);
-		}
-	}*/
-			  ///  (min<plant moisture<max) ||
 
 }
 
