@@ -36,6 +36,10 @@ module.exports = class HTMLServer {
 	}
 
 	stopServer(){
+	//try to deal with all requests before shutdown
+		this.app.close(function() {
+    			console.log('Http server closed.');
+  		});
 	
 	}
 	
