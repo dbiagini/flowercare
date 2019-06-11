@@ -6,6 +6,8 @@ var path = require('path');
 var config = require('./config2pl_sim');
 var gpio = null; 
 var srv = require('./htmlServer');
+var Pump = require('./pump.js');
+var LED = require('./led.js');
 console.log(" platform %s \n", process.platform);
 if (process.platform != "win32") gpio = require('onoff').Gpio;
 const server = new srv();
@@ -42,9 +44,8 @@ var statusLED = null;
 var blinkInterval = null;
 var sensorStartingUp = true;
 if (process.platform != "win32") {
-	statusLED = new gpio(4, 'out'); ///first pin as status led
-	statusLED.writeSync(0); ///initialize the led to 0
-	ledBlink();
+	statusLED = new LED(4);//new gpio(4, 'out'); ///first pin as status led
+	statusLED.Blink(); //starting up
 }
 if(config.useSim) {
 	console.log('Running Sensor simulation \n');
@@ -60,8 +61,8 @@ if(config.useSim) {
 for (var i = 0; i< config.plants.length; i++){
 	//initialize GPIO
 	if(config.irrigate && (process.platform != "win32")){
-		config.plants[i].pump = new gpio(config.plants[i].gpio, 'out');
-		config.plants[i].pump.writeSync(0); ///initialize the pump to 0
+		config.plants[i].pump = new Pump(config.plants[i].gpio);//new gpio(config.plants[i].gpio, 'out');
+		//config.plants[i].pump.writeSync(0); ///initialize the pump to 0
 	}
 	checkStatusInterval(config.plants[i]);
 	if(!config.useSim){ 
@@ -76,7 +77,11 @@ for (var i = 0; i< config.plants.length; i++){
 
 server.start(config.plants); //pass the array of plants
 
-if (process.platform != "win32") setTimeout(function() { endBlink(); } , 10000);
+if (process.platform != "win32") setTimeout(function() { 
+	statusLED.endBlink(); 
+	sensorStartingUp = false; //assume sensor settled 
+} , 10000);
+		
 
 function checkStatusInterval(plant){
 	if (!config.useSim){
@@ -168,8 +173,8 @@ function refuelPlant(plant){
 	///irrigate n units
 	if(plant.pump){
 
-		/*if(!config.useSim)*/ pumpOn(plant.pump); //turn on plant
-		/*if(!config.useSim)*/ setTimeout(pumpOff, (plant.unit * units), plant.pump);//turn it off later
+		/*if(!config.useSim)*/ plant.pump.On(); //turn on plant
+		/*if(!config.useSim)*/ setTimeout(plant.pump.Off, (plant.unit * units));//turn it off later
 		if(config.useSim) {
 			plant.moisture[0] +=(20 * units);
 		}
@@ -177,90 +182,10 @@ function refuelPlant(plant){
 
 	//console.log("plant new moisture %d \n", plant.moisture[0]);
 }
-function pumpToggle(pump){
-	if(pump)
-	{
-		/*if(pump.readSync == 0){
-	 		//pump is off
-			if(!config.useSim) pump.writeSync(1);
-			console.log("pump on");
-		}
-		else{
-			if(!config.useSim) {
-				pump.writeSync(0);
-			}
-			console.log("pump off");
-		}*/
-
-		pump.writeSync(statusLED.readSync() === 0 ? 1:0);
-	} else console.log("no Pump \n");
-}
-
-function pumpOn(pump){
-	if(pump)
-	{
-		pump.writeSync(1);
-		console.log("Pump on \n");
-
-	} else console.log("no Pump \n");
-}
-
-function pumpOff(pump){
-	if(pump)
-	{
-		pump.writeSync(0);
-		console.log("Pump off \n");
-	} else console.log("no Pump \n");
-}
 
 function settled(plant){
 	console.log("ground should be settled! \n");
 	plant.settling = false; ///allow irrigating
 }
 
-function ledToggle(){
-	if(statusLED)
-	{
-		/*var stat = statusLED.readSync();
-		console.log("status LED %d \n", stat);
-		if(stat == 0){
-			statusLED.writeSync(1);
-		}
-		else{
-			statusLED.writeSync(0);
-		}*/
-		statusLED.writeSync(statusLED.readSync() === 0 ? 1:0);
-	} else console.log("status LED not working \n");
-}
 
-function ledOn(){
-	if(statusLED)
-	{
-		statusLED.writeSync(1);
-	} else console.log("status LED not working \n");
-}
-
-function ledOff(){
-	if(statusLED)
-	{
-		statusLED.writeSync(0);
-	} else console.log("status LED not working \n");
-}
-
-function ledBlink(){
-	if(statusLED)
-	{
-		if(blinkInterval == null) blinkInterval = setInterval(ledToggle, 500);
-		else console.log("blinking interval is already set");
-	} else console.log("status LED not working \n");
-}
-
-function endBlink(){
-	if(blinkInterval)
-	{
-		clearInterval(blinkInterval);
-		statusLED.writeSync(1);
-		blinkInterval = null;
-		sensorStartingUp = false; //assume sensor settled 
-	} else console.log("status LED not working \n");
-}
