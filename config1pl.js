@@ -5,6 +5,14 @@ config.irrigate = true;
 config.debug = false;
 config.interval = 900000; //ms for a normal loop
 config.intervalSim = 60000; //one minute for simulation
+config.options = {
+	mode: 'text',
+	pythonPath: '/usr/bin/python3',
+	pythonOption: ['-u'],
+	scriptPath: '/home/pi/miflora',
+	args: 'dummy value', //config.plants[0].mac, //'C4:7C:8D:65:F8:FB', //mac address
+};
+
 
 plant0 = {
 	name : "Kawa",

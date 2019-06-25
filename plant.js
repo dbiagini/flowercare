@@ -1,3 +1,5 @@
+var PythonShell = require('python-shell');
+
 module.exports = class Plant {
 
 	/*constructor() {
@@ -33,6 +35,7 @@ module.exports = class Plant {
 		this.unit = plant.unit; //ms pump opening in order to deliver 25cl
 		this.maxUnits = plant.maxUnits; //max value to irrigate
 		this.refuelCounter = 0 //counter used to check max refuel
+		this.options = ''; //placeholder for sensor driver
 	}
 
 	initPump(){
@@ -63,6 +66,10 @@ module.exports = class Plant {
 			this.gpio = plant.gpio;
 			this.pump = new Pump(plant.gpio);
 		}
+	}
+
+	initSensor(options){
+		this.options = options; //copy the option params locally 
 	}
 
 	initSimulation(){
@@ -156,6 +163,63 @@ module.exports = class Plant {
 
 	logStatus(){
 		console.log('plant: %s status, moisture %d settling %d refuelCounter %d ', this.name, this.moisture[0], this.settling, this.refuelCounter);
+	}
+
+	checkStatus(useSim, irrigate){
+		if (!useSim){
+
+			options.args = this.mac;//only input variable
+				PythonShell.run('demo.py', options, function (err,data){
+				this.handlePostcheck(err, data, irrigate);
+			});
+
+		} else {
+
+			//this runs only if the sensor simulation is being used
+			//output="Temperature="+temperature.toString()+" Moisture="+moisture.toString()+" Sunlight= "+sunlight.toString()+" Fertility="+fertility.toString();
+				//plant.temperature[0] -= Math.floor(Math.random() * 5);
+				//plant.fertility[0] -= Math.floor(Math.random() * 5);
+				//plant.sunlight[0] -= Math.floor(Math.random() * 5);
+				this.moisture[0] -= Math.floor(Math.random() * 10);
+				//plant.battery[0]  -= Math.floor(Math.random()* 5);
+				console.log('plant: %s, sim moisture %d ', this.name, this.moisture[0]);
+			if(irrigate) {
+				this.checkIrrigate();
+			} else {
+				//debug string//
+
+				this.logStatus();
+			}
+
+		}
+
+	}
+
+	handlePostcheck(err, output, irrigate){
+
+		if(err){
+			//handle errors from Python
+			//Don't change Values
+			//should print a warning in the page
+			this.updateLastWarning("Issue with connection to the sensor");
+		} else {
+
+			this.updateStatus(output);		
+		}
+		//log in any case
+		console.log('output: %j', output);
+
+		if(irrigate) { //irrigate can be turned off by config or by the sensorIsStarting flag
+		
+			this.checkIrrigate();
+
+		} else {
+			//debug string//
+			plant.logStatus();
+			console.log(' sensorStarted %d irrigate %b', sensorStartingUp, config.irrigate);
+		}
+
+
 	}
 
 

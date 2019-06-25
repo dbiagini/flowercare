@@ -20,14 +20,14 @@ console.log(timeOfStart);
 
 server.init();
 
-var PythonShell = require('python-shell');
-var options = {
+//var PythonShell = require('python-shell');
+/*var options = {
 	mode: 'text',
 	pythonPath: '/usr/bin/python3',
 	pythonOption: ['-u'],
 	scriptPath: '/home/pi/miflora',
 	args: 'dummy value', //config.plants[0].mac, //'C4:7C:8D:65:F8:FB', //mac address
-};
+};*/
 
 
 var output= '';
@@ -69,6 +69,7 @@ for (var i = 0; i< config.plants.length; i++){
 	}
 	checkStatusInterval(garden[i]);
 	if(!config.useSim){ 
+		garden[i].initSensor(config.options);
 		setInterval(checkStatusInterval, config.interval, garden[i]);//every half an hour(1.8M) update
 	} else { 
 		setInterval(checkStatusInterval, config.intervalSim, garden[i]);//every 10 minutes an hour update
@@ -85,8 +86,15 @@ if (process.platform != "win32") setTimeout(function() {
 	sensorStartingUp = false; //assume sensor settled 
 } , 10000);
 		
-
 function checkStatusInterval(plant){
+	//using a garden based function as the call to irrigate is based on garden status parameters which change from call to call, less efficient option
+	var irrigate = false;
+	if(config.irrigate && (!sensorStartingUp)) irrigate = true;
+	plant.checkStatus(config.useSim, irrigate);
+
+}
+
+/*function checkStatusInterval(plant){
 	if (!config.useSim){
 
 		options.args = plant.mac;//only input variable
@@ -113,9 +121,9 @@ function checkStatusInterval(plant){
 
 	}
 
-}
+}*/
 
-function handlePostcheck(err, output, plant){
+/*function handlePostcheck(err, output, plant){
 
 	if(err){
 		//handle errors from Python
@@ -142,6 +150,6 @@ function handlePostcheck(err, output, plant){
 	}
 
 
-}
+}*/
 
 
