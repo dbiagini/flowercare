@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<META HTTP-EQUIV="refresh" CONTENT="15">
+    <link rel="stylesheet" href="https://bootswatch.com/4/cerulean/bootstrap.min.css">
+    <title>GardenJs</title>
+</head>
+<body>
+    <div class="container">
+  <div class="row">
+            <div class="col-md-6 mx-auto text-center bg-primary mt-5 p-5 rounded">
+                <h1 id="w-plantName"></h1>
+                    <h3 class="text-dark" id="w-desc"></h3>
+                        <h3 id="w-string"></h3>
+                            <img id="w-icon">
+                            <ul class="list-group mt-3" id="w-details">
+                               <li class="list-group-item" id="w-sunlight">
+                                <table class="roundedCorners">
+                                    <tr class="notfirst" align="center">
+                                    <td width="50px"><img src="/images/sunlight.png" alt="Sunlight" style="width:50px;height:50px;"></td>
+                                    <td width="60px"><a></a></td>
+                                    <td width="60px"><a>Lux</a></td>
+                                    </tr>
+                                </table>
+                               </li> 
+                               <li class="list-group-item" id="w-moisture"></li> 
+                               <li class="list-group-item" id="w-fertility"></li> 
+                               <li class="list-group-item" id="w-temperature"></li> 
+                               <li class="list-group-item" id="w-battery"></li> 
+                               <li class="list-group-item" id="w-warnings"></li> 
+                            </ul>
+                            <hr>
+                            <!-- Button trigger modal -->
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script> var plants = <%- JSON.stringify(plants) %>;</script>
+    <script src="app.js"></script>
+</body>
+</html>

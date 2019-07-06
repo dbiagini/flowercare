@@ -18,7 +18,7 @@ module.exports = class HTMLServer {
 	start(config_plants){
 		//register index
 		this.app.get('/', function(req, res) {
-			res.render('pages/indexPl',{
+			res.render('pages/IndexBoot',{
 				plants: config_plants,
 			});
 		});
