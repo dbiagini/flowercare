@@ -6,7 +6,6 @@ var path = require('path');
 var config = require('./config2pl_sim');
 var gpio = null; 
 var srv = require('./htmlServer');
-var Pump = require('./pump.js');
 var LED = require('./led.js');
 var Plant = require('./plant.js');
 console.log(" platform %s \n", process.platform);
@@ -19,15 +18,6 @@ console.log(timeOfStart);
 
 
 server.init();
-
-//var PythonShell = require('python-shell');
-/*var options = {
-	mode: 'text',
-	pythonPath: '/usr/bin/python3',
-	pythonOption: ['-u'],
-	scriptPath: '/home/pi/miflora',
-	args: 'dummy value', //config.plants[0].mac, //'C4:7C:8D:65:F8:FB', //mac address
-};*/
 
 
 var output= '';
@@ -70,10 +60,11 @@ for (var i = 0; i< config.plants.length; i++){
 	checkStatusInterval(garden[i]);
 	if(!config.useSim){ 
 		garden[i].initSensor(config.options);
-		setInterval(checkStatusInterval, config.interval, garden[i]);//every half an hour(1.8M) update
+		//setInterval(checkStatusInterval, config.interval, garden[i]);//every half an hour(1.8M) update
+		setInterval(garden[i].checkStatus, config.interval, (config.irrigate && (!sensorStartingUp)));//every half an hour(1.8M) update
 	} else { 
-		setInterval(checkStatusInterval, config.intervalSim, garden[i]);//every 10 minutes an hour update
-		console.log('been here');
+		//setInterval(checkStatusInterval, config.intervalSim, garden[i]);//every 10 minutes an hour update
+		setInterval(garden[i].checkStatus, config.intervalSim, (config.irrigate && (!sensorStartingUp)));//every half an hour(1.8M) update
 	}
 	console.log('config: %j', garden[i]); //log plant status
 }
@@ -93,63 +84,4 @@ function checkStatusInterval(plant){
 	plant.checkStatus(config.useSim, irrigate);
 
 }
-
-/*function checkStatusInterval(plant){
-	if (!config.useSim){
-
-		options.args = plant.mac;//only input variable
-			PythonShell.run('demo.py', options, function (err,data){
-			handlePostcheck(err, data, plant);
-		});
-
-	} else {
-
-		//this runs only if the sensor simulation is being used
-		//output="Temperature="+temperature.toString()+" Moisture="+moisture.toString()+" Sunlight= "+sunlight.toString()+" Fertility="+fertility.toString();
-			//plant.temperature[0] -= Math.floor(Math.random() * 5);
-			//plant.fertility[0] -= Math.floor(Math.random() * 5);
-			//plant.sunlight[0] -= Math.floor(Math.random() * 5);
-			plant.moisture[0] -= Math.floor(Math.random() * 10);
-			//plant.battery[0]  -= Math.floor(Math.random()* 5);
-			console.log('plant: %s, sim moisture %d ', plant.name, plant.moisture[0]);
-		if(config.irrigate && (!sensorStartingUp)) {
-			plant.checkIrrigate();
-		} else {
-			//debug string//
-			if(config.debug) console.log('plant: %s status, moisture %d settling %d sensorStarted %d refuelCounter %d irrigate %b', plant.name, plant.moisture[0], plant.settling, sensorStartingUp, plant.refuelCounter, config.irrigate);
-		}
-
-	}
-
-}*/
-
-/*function handlePostcheck(err, output, plant){
-
-	if(err){
-		//handle errors from Python
-		//Don't change Values
-		//should print a warning in the page
-		plant.updateLastWarning("Issue with connection to the sensor");
-	} else {
-		plant.updateStatus(output);		
-	}
-	//log in any case
-	console.log('output: %j', output);
-
-	if(config.irrigate && (!sensorStartingUp)) {
-	
-		plant.checkIrrigate();
-
-	} else {
-		//debug string//
-		if(config.debug) { 
-			
-			plant.logStatus();
-			console.log(' sensorStarted %d irrigate %b', sensorStartingUp, config.irrigate);
-		}
-	}
-
-
-}*/
-
 

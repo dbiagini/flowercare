@@ -1,4 +1,5 @@
 var PythonShell = require('python-shell');
+var Pump = require('./pump.js');
 
 module.exports = class Plant {
 
