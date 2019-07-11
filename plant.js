@@ -177,12 +177,13 @@ module.exports = class Plant {
 		} else {
 
 			
-			console.log('Simulating Sensor ');
+			console.log('Simulating Sensor');
 			//this runs only if the sensor simulation is being used
 			//output="Temperature="+temperature.toString()+" Moisture="+moisture.toString()+" Sunlight= "+sunlight.toString()+" Fertility="+fertility.toString();
 				//plant.temperature[0] -= Math.floor(Math.random() * 5);
 				//plant.fertility[0] -= Math.floor(Math.random() * 5);
 				//plant.sunlight[0] -= Math.floor(Math.random() * 5);
+
 				this.moisture[0] -= Math.floor(Math.random() * 10);
 				//plant.battery[0]  -= Math.floor(Math.random()* 5);
 				console.log('plant: %s, sim moisture %d ', this.name, this.moisture[0]);

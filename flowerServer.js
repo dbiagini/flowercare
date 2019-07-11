@@ -61,11 +61,12 @@ for (var i = 0; i< config.plants.length; i++){
 	if(!config.useSim){ 
 		garden[i].initSensor(config.options);
 		//setInterval(checkStatusInterval, config.interval, garden[i]);//every half an hour(1.8M) update
-		setInterval(garden[i].checkStatus, config.interval, config.useSim, (config.irrigate && (!sensorStartingUp)));//every half an hour(1.8M) update
+		setInterval(garden[i].checkStatus.bind(garden[i]), config.interval, config.useSim, (config.irrigate && (!sensorStartingUp)));//every half an hour(1.8M) update
 	} else { 
 		//setInterval(checkStatusInterval, config.intervalSim, garden[i]);//every 10 minutes an hour update
-		setInterval(garden[i].checkStatus, config.intervalSim, config.useSim, (config.irrigate && (!sensorStartingUp)));//every half an hour(1.8M) update
+		setInterval(garden[i].checkStatus.bind(garden[i]), config.intervalSim, config.useSim, (config.irrigate && (!sensorStartingUp)));//every half an hour(1.8M) update
 	}
+
 	console.log('config: %j', garden[i]); //log plant status
 }
 

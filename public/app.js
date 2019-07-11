@@ -4,13 +4,18 @@ document.addEventListener('DOMContentLoaded', paintTab);
 function paintTab(){
     const plantName =  document.getElementById('w-plantName');
     plantName.textContent =  plants[0].name;
-    //this.desc.textContent = weather.weather[0].description;
-    //this.string.textContent =  weather.main.temp+' °C';
-    //this.details =  document.getElementById('w-details');
-    
-    //this.icon.setAttribute('src', "http://openweathermap.org/img/w/" + weather.weather[0].icon + ".png");
-    //this.humidity =  document.getElementById('w-humidity');
-    //this.humidity.textContent =  `Relative Humidity: ${weather.main.humidity} %`;
+
+    const sunlight  =  document.getElementById('w-sunlight-value');
+    sunlight.textContent = plants[0].sunlight[0]+'Lux';
+    const moisture  =  document.getElementById('w-moisture-value');
+    moisture.textContent = plants[0].moisture[0]+'%';
+    const fertility  =  document.getElementById('w-fertility-value');
+    fertility.textContent = plants[0].fertility[0]+'uS/cm';
+    const temperature  =  document.getElementById('w-temperature-value');
+    temperature.textContent = plants[0].temperature[0]+'C';
+    const battery  =  document.getElementById('w-battery-value');
+    battery.textContent = plants[0].battery[0]+'%';
+
 }
 
 

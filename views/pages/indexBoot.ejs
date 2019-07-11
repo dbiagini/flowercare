@@ -6,6 +6,37 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<META HTTP-EQUIV="refresh" CONTENT="15">
     <link rel="stylesheet" href="https://bootswatch.com/4/cerulean/bootstrap.min.css">
+    <style>
+        table {
+            <!-- border-collapse: collapse; -->
+            width: 30%;
+            float: left;
+            margin: 10px;
+
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        table.roundedCorners { 
+                border: 1px solid Black;
+                border-radius: 13px; 
+                border-spacing: 0;
+            }
+        table.roundedCorners td, 
+        table.roundedCorners th { 
+            border-bottom: 1px solid Black;
+            padding: 10px; 
+            }
+        table.roundedCorners tr:last-child > td {
+                border-bottom: none;
+        }
+        tr.notfirst:hover {
+                background-color:#f5f5f5;
+                border: 1px solid Black;
+        }
+    </style>
     <title>GardenJs</title>
 </head>
 <body>
@@ -17,23 +48,48 @@
                         <h3 id="w-string"></h3>
                             <img id="w-icon">
                             <ul class="list-group mt-3" id="w-details">
-                               <li class="list-group-item" id="w-sunlight">
-                                <table class="roundedCorners">
-                                    <tr class="notfirst" align="center">
-                                    <td width="50px"><img src="/images/sunlight.png" alt="Sunlight" style="width:50px;height:50px;"></td>
-                                    <td width="60px"><a></a></td>
-                                    <td width="60px"><a>Lux</a></td>
-                                    </tr>
-                                </table>
-                               </li> 
-                               <li class="list-group-item" id="w-moisture"></li> 
-                               <li class="list-group-item" id="w-fertility"></li> 
-                               <li class="list-group-item" id="w-temperature"></li> 
-                               <li class="list-group-item" id="w-battery"></li> 
-                               <li class="list-group-item" id="w-warnings"></li> 
+                              <li class="list-group-item" id="w-sunlight">
+                                <div class="row">
+				    <div class="col-sm align-self-center" width="50px"><img src="/images/sunlight.png" alt="Sunlight" style="width:50px;height:50px;"></div>
+				    <div class="col-sm align-self-center"> <a>Sunlight</a> </div>
+                                    <div class="col-sm align-self-center" width="60px" id="w-sunlight-value"><a></a></div>
+                                 </div>
+                               </li>
+                               <li class="list-group-item" id="w-moisture">
+			       	<div class="row">
+				    <div class="col-sm align-self-center" width="50px"><img src="/images/water.png" alt="Moisture" style="width:50px;height:50px;"></div>
+				    <div class="col-sm align-self-center" style="text-align:center"><a>Moisture</a></div>
+                                    <div class="col-sm align-self-center" width="60px" id="w-moisture-value"><a></a></div>
+                                </div>
+
+			       </li> 
+                               <li class="list-group-item" id="w-fertility">
+			       <div class="row">
+				    <div class="col-sm align-self-center" width="50px"><img src="/images/poo.png" alt="Fertility" style="width:50px;height:50px;"></div>
+				    <div class="col-sm align-self-center"><a>Fertility</a></div>
+                                    <div class="col-sm align-self-center" width="60px" id="w-fertility-value"><a></a></div>
+                                </div>
+			       </li> 
+                               <li class="list-group-item" id="w-temperature">
+			       <div class="row">
+				    <div class="col-sm align-self-center" width="50px"><img src="/images/temperature.png" alt="Temperature" style="width:50px;height:50px;"></div>
+				    <div class="col-sm align-self-center"><a>Temperature</a></div>
+                                    <div class="col-sm align-self-center" width="60px" id="w-temperature-value"><a></a></div>
+                                </div>
+			       </li> 
+                               <li class="list-group-item" id="w-battery">
+			       <div class="row">
+				    <div class="col-sm align-self-center" width="50px"><img src="/images/battery.png" alt="Battery" style="width:50px;height:50px;"></div>
+				    <div class="col-sm align-self-center"><a>Battery</a></div>
+                                    <div class="col-sm align-self-center" width="60px" id="w-battery-value"><a></a></div>
+                                </div>
+			       </li> 
+                               <li class="list-group-item" id="w-warnings">     
+			       	    <div class="row">
+                                    	<div class="col-sm align-self-center" id="w-warning-value"><a></a></div>
+				    </div>
+			       </li> 
                             </ul>
-                            <hr>
-                            <!-- Button trigger modal -->
             </div>
         </div>
     </div>
